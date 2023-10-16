@@ -1,0 +1,99 @@
+{% extends 'mysite/layout.html' %}
+{% block content %}
+
+    <div class="top">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- ЗАГОЛОВОК -->
+                <div style="background: aliceblue"  class="col-md-12 col-xl-12">
+                    <h1 class="text-center">EasyBusy</h1>
+                </div>
+                <!-- ПОДЗАГОЛОВОК -->
+                <div style="background: azure" class="col-md-12 col-xl-12">
+                    <h3 class="text-center">Управляй своим временем!</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ОБЛАСТЬ ФОРМЫ -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- NAV #2 -->
+            <div style="background: gainsboro" class="col-sm-2 col-md-2 col-xl-2">Блок До</div>
+            <div class="col-xl-8 col-md-8 col-sm-8 d-flex justify-content-center mb-3 mt-3" >
+                <form action="{% url 'add' %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input type="text" name="title" placeholder="Введите название задачи">
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" rows="3" name="description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <input style="width: 13rem; min-width: 13rem" type="date" name="deadline">
+                    </div>
+                    <button style="min-width: 13rem " class="btn btn-outline-success" type="submit">Добавить</button>
+                </form>
+            </div>
+            <div style="background: aqua" class="col-sm-2 col-md-2 col-xl-2">Блок После</div>
+        </div>
+    </div>
+
+    <!-- КАРТОЧКИ -->
+    {% for todo in todo_list %}
+        <div class="container-fluid">
+            <div class="row">
+                <div style="background: gainsboro" class="col-sm-1 col-md-2 col-xl-3">Блок До</div>
+                <div class="col-sm-10 col-md-8 col-xl-6 d-flex justify-content-center">
+                    <div  class="card mt-3" style="width: 35rem; min-width: 28rem;">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div> Задача № {{ todo.id }}</div>
+                                </div>
+                                    <div class="col-6">{{ todo.title }}</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {% if todo.description == None %}
+                                <div class="card-text">Описание: Отсутствует</div>
+                            {% else %}
+                                <div class="card-text h5">Описание: {{ todo.description }}</div>
+                            {% endif %}
+                            <div class="btn-group d-flex justify-content-center" role="group">
+                                {% if todo.is_complete == False %}
+                                    <button type="button" class="btn btn-outline-secondary" disabled>Не выполнено</button>
+                                    <a type="button" class="btn btn-outline-success" href="{% url 'finished' todo_id=todo.id %}">Завершить</a>
+                                {% else %}
+                                    <button type="button" class="btn btn-outline-secondary" disabled>Выполнено</button>
+                                    <a type="button" class="btn btn-outline-warning" href="{% url 'finished' todo_id=todo.id %}">К выполнению</a>
+                                {% endif %}
+                                <a type="button" class="btn btn-outline-info" href="{% url 'edit' todo_id=todo.id %}">Редактировать</a>
+                                <a type="button" class="btn btn-outline-danger" href="{% url 'delete' todo_id=todo.id %}">Удалить</a>
+                            </div>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <div class="row">
+                                <div class="col-6">Дата создания: {{ todo.created|date:"d.m.Y"}}</div>
+                                {% if todo.deadline == None %}
+                                    <div class="col-6">Дедлайн: Не задан</div>
+                                {% else %}
+                                    <div class="col-6">Дедлайн: {{ todo.deadline|date:"d.m.Y" }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: aqua" class="col-sm-1 col-md-2 col-xl-3">Блок после</div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container d-flex justify-content-center">
+            <span class="text-muted">Copyright</span>
+        </div>
+    </footer>
+
+{% endblock content %}

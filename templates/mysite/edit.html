@@ -1,0 +1,52 @@
+{% extends 'mysite/layout.html' %}
+<title>{{ title }} </title>
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- ЗАГОЛОВОК -->
+            <div style="background: aliceblue" class="col-md-12 col-xl-12">
+                <h1 class="text-center">Редактирование</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row mb-3">
+            <!-- NAV #2 -->
+            <div style="background: gainsboro" class="col-sm-2 col-md-2 col-xl-2">Блок ДО</div>
+            <div  class="col-xl-8 col-md-8 col-sm-8 d-flex justify-content-center" >
+                <form action="{% url 'update' todo_id=todos.id %}" method="post">
+                    {% csrf_token %}
+                    <label class="h5 mt-1">Задача: {{ todos.id }}</label>
+                    <div class="mb-3">
+                        <input type="text"  name="title" value="{{ todos.title }}">
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" rows="3"   name="description" >{{ todos.description }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        {% if todos.deadline == None %}
+                            <p>Дедлайн: Не задан</p>
+                        {% else %}
+                            <p>Дедлайн: {{ todos.deadline|date:"d.m.Y" }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <input style="min-width: 13rem" type="date" name="deadline" value="{{todos.deadline}}">
+                    </div>
+                    <div class="mb-3">
+                        {% if todos.is_complete == True %}
+                            <label>Статус выполнения:</label><input class="form-check-input" type="checkbox"  name="is_complete" value="{{ todos.is_complete }}" checked>
+                        {% else %}
+                           <label>Статус выполнения:</label> <input class="form-check-input" type="checkbox"  name="is_complete" value="{{ todos.is_complete }}">
+                        {% endif %}
+                    </div>
+                    <button style="min-width: 13rem" class="btn btn-outline-success mb-3" type="submit" >Подтвердить изменения</button>
+                </form>
+            </div>
+            <div style="background: aqua" class="col-sm-2 col-md-2 col-xl-2">Блок после</div>
+        </div>
+    </div>
+
+{% endblock content %}
